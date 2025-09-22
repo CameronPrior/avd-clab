@@ -237,6 +237,7 @@ class ClabHelper:
         self.working_dir = None
         self.doc_dir = None
         self.anta_dir = None
+        self.anta_custom = None
         self.intend_dir = None
         self.creds = {}
         self.tokens = {}
@@ -458,6 +459,7 @@ class ClabHelper:
                 self.topology_type = "single_l3ls"
                 self.doc_dir = self.topology_dir / "single_l3ls" / "documentation"
                 self.anta_dir = self.topology_dir / "single_l3ls" / "reports"
+                self.anta_custom = self.topology_dir / "single_l3ls" / "custom_anta_catalogs"
                 self.inventory_file = self.single_inv_file
                 break
             elif lab_path == "topologies/dual_l3ls/topology.yaml":
@@ -465,6 +467,7 @@ class ClabHelper:
                 self.topology_type = "dual_l3ls"
                 self.doc_dir = self.topology_dir / "dual_l3ls" / "documentation"
                 self.anta_dir = self.topology_dir / "dual_l3ls" / "reports"
+                self.anta_custom = self.topology_dir / "dual_l3ls" / "custom_anta_catalogs"
                 self.inventory_file = self.dual_inv_file
                 break
 
@@ -2021,6 +2024,7 @@ class ClabHelper:
             print(f"- {self.network_file}")
             print(f"- {self.output_deploy_cvp_file}")
             print(f"- {self.not_first_start_file}")
+            print(f"- {self.anta_dir}")
             print(68 * "*")
             print("")
             delete = input(
@@ -2029,6 +2033,8 @@ class ClabHelper:
             if delete == "y":
                 if self.single_doc_dir.exists():
                     shutil.rmtree(self.single_doc_dir)
+                if self.anta_dir.exists():
+                    shutil.rmtree(self.anta_dir)
                 if self.dual_doc_dir.exists():
                     shutil.rmtree(self.dual_doc_dir)
                 if self.single_intend_dir.exists():
@@ -2221,6 +2227,8 @@ class ClabHelper:
         print_header("Lab Deployment Progress", width=60)
     
         self.run_task_with_animation(self.deploy_clab, "Deploying AVD CLAB")
+        if self.cvp_required == "yes":
+            self.cvp_generate_device_token()
         self.create_commands()
         if self.cvp_required == "yes":
             self.run_task_with_animation(self.cvp_register_devices, "Registering Devices with CVP"),

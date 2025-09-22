@@ -21,6 +21,12 @@ ansible_httpapi_validate_certs: false
 generate_cv_tags:
   topology_hints: true
 
+# Generate CSVs with fabric link info.
+eos_designs_documentation:
+  topology_csv: true
+  p2p_links_csv: true
+
+
 # Common AVD group variables
 fabric_name: FABRIC
 
